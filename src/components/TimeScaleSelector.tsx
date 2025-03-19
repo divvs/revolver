@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 interface TimeScaleSelectorProps {
   onChange?: (minutes: number) => void;
@@ -11,14 +11,14 @@ export const TimeScaleSelector = ({ onChange }: TimeScaleSelectorProps) => {
 
   const handleIncrement = () => {
     if (currentIndex < TIME_SCALES.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
       onChange?.(TIME_SCALES[currentIndex + 1]);
     }
   };
 
   const handleDecrement = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(prev => prev - 1);
+      setCurrentIndex((prev) => prev - 1);
       onChange?.(TIME_SCALES[currentIndex - 1]);
     }
   };
@@ -29,22 +29,24 @@ export const TimeScaleSelector = ({ onChange }: TimeScaleSelectorProps) => {
         {TIME_SCALES[currentIndex]}M
       </div>
       <div className="flex flex-col h-8 bg-white rounded-r-lg">
-        <button 
+        <button
           className={`h-4 w-6 flex items-center justify-center text-[10px] font-mono
-            ${currentIndex === TIME_SCALES.length - 1 
-              ? 'text-gray-400 cursor-not-allowed' 
-              : 'text-gray-700 hover:bg-blue-50 transition-colors'
+            ${
+              currentIndex === TIME_SCALES.length - 1
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-gray-700 hover:bg-blue-50 transition-colors"
             }`}
           onClick={handleIncrement}
           disabled={currentIndex === TIME_SCALES.length - 1}
         >
           ▲
         </button>
-        <button 
+        <button
           className={`h-4 w-6 flex items-center justify-center text-[10px] font-mono
-            ${currentIndex === 0 
-              ? 'text-gray-400 cursor-not-allowed' 
-              : 'text-gray-700 hover:bg-red-50 transition-colors'
+            ${
+              currentIndex === 0
+                ? "text-gray-400 cursor-not-allowed"
+                : "text-gray-700 hover:bg-red-50 transition-colors"
             }`}
           onClick={handleDecrement}
           disabled={currentIndex === 0}
@@ -54,4 +56,4 @@ export const TimeScaleSelector = ({ onChange }: TimeScaleSelectorProps) => {
       </div>
     </div>
   );
-}; 
+};
