@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TimeRuler } from "./components/TimeRuler";
 import { SettingsPanel } from "./components/SettingsPanel";
+import { TimeScaleSelector } from "./components/TimeScaleSelector";
 
 type Theme = "light" | "dark" | "system";
 
@@ -63,11 +64,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+      <div className="relative  items-center justify-center flex z-10 w-screen bg-white  dark:bg-gray-900 ">
+        <TimeScaleSelector onChange={setTimeScale} />
+      </div>
+
       <TimeRuler
         timeScale={timeScale}
-        width={window.innerWidth}
-        onTimeScaleChange={setTimeScale}
         showMarkerLines={showMarkerLines}
       />
       <SettingsPanel

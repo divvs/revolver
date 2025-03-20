@@ -4,8 +4,6 @@ import { format, startOfDay, endOfDay, eachMinuteOfInterval } from "date-fns";
 
 interface TimeRulerProps {
   timeScale: number;
-  width: number;
-  onTimeScaleChange: (minutes: number) => void;
   showMarkerLines?: boolean;
 }
 
@@ -45,8 +43,6 @@ const TEXT_COLORS = {
 
 export const TimeRuler = ({
   timeScale,
-  width,
-  onTimeScaleChange,
   showMarkerLines = true,
 }: TimeRulerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,7 +59,7 @@ export const TimeRuler = ({
     ).map((date, index) => ({
       minute: date.getMinutes(),
       isHour: date.getMinutes() === 0,
-      label: date.getMinutes() === 0 ? format(date, "H") : format(date, "m"),
+      label: date.getMinutes() === 0 ? format(date, "H") : timeScale < 30 ? format(date, "m") : "",
       key: `${timeScale}-${date.getTime()}`,
       hour: Math.floor(date.getHours()),
       isEven: index % 2 === 0,
@@ -129,27 +125,24 @@ export const TimeRuler = ({
 
   return (
     <div
-      className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
+      className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 w-screen overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="absolute left-0 top-0 bottom-0 z-10 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
-        <TimeScaleSelector onChange={onTimeScaleChange} />
-      </div>
       <div
         ref={containerRef}
-        className="relative h-24 overflow-x-auto scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent select-none ml-[120px]"
+        className="relative h-24 w-full select-none"
         style={{
           scrollbarColor: isHovered
             ? "var(--scrollbar-thumb) var(--scrollbar-track)"
             : "transparent transparent",
         }}
       >
-        <div className="relative h-full flex">
+        <div className="relative h-full flex w-full">
           {markers.map((marker) => (
             <div
               key={marker.key}
-              className="relative w-[2ch] min-w-[2ch] h-full flex flex-col items-center group"
+              className="relative flex-1 h-full flex flex-col items-center group"
               onMouseEnter={() =>
                 !marker.isHour &&
                 setHoveredMinute(marker.minute + marker.hour * 60)
@@ -157,20 +150,18 @@ export const TimeRuler = ({
               onMouseLeave={() => setHoveredMinute(null)}
             >
               <div
-                className={`absolute top-0 transition-all duration-300 ease-in-out ${
-                  showMarkerLines ? "left-0" : "left-1/2 -translate-x-1/2"
-                }`}
+                className={`absolute top-0 transition-all duration-300 ease-in-out ${showMarkerLines ? "left-0" : "left-1/2 -translate-x-1/2"
+                  }`}
               >
                 <div
                   className={`w-[1px] transition-all duration-300 ease-in-out ${getMarkerLineStyle(marker)}`}
                 />
               </div>
               <div
-                className={`absolute left-1/2 -translate-x-1/2 w-[2ch] text-center transition-all duration-300 ease-in-out ${
-                  marker.isHour
-                    ? `${getLabelPosition(marker)} ${getHourMarkerLabelStyle(marker.hour)} text-[12px] font-medium`
-                    : `${getLabelPosition(marker)} ${getMinuteLabelStyle(marker)} text-[10px]`
-                }`}
+                className={`absolute z-10 left-1/2 -translate-x-1/2 w-[2ch] text-center transition-all duration-300 ease-in-out ${marker.isHour
+                  ? `${getLabelPosition(marker)} ${getHourMarkerLabelStyle(marker.hour)} text-[12px] font-medium`
+                  : `${getLabelPosition(marker)} ${getMinuteLabelStyle(marker)} text-[10px] opacity-0 group-hover:opacity-100`
+                  }`}
               >
                 {marker.label}
               </div>
